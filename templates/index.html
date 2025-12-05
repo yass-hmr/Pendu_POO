@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Pendu - Accueil{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Nouvelle partie</h2>
+
+    <form method="post" class="form-grid">
+        <div class="form-group">
+            <label>Mode de jeu</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="mode" value="solo" checked>
+                    1 joueur (mot aléatoire)
+                </label>
+                <label>
+                    <input type="radio" name="mode" value="duo">
+                    2 joueurs (mot saisi)
+                </label>
+            </div>
+        </div>
+
+        <div class="solo-options">
+            <div class="form-group">
+                <label for="theme">Thème</label>
+                <select name="theme" id="theme">
+                    {% for t in themes %}
+                        <option value="{{ t }}">{{ t|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="difficulte">Difficulté</label>
+                <select name="difficulte" id="difficulte">
+                    {% for d in difficultes %}
+                        <option value="{{ d }}">{{ d|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="duo-options">
+            <div class="form-group">
+                <label for="joueur1">Nom Joueur 1 (choisit le mot)</label>
+                <input type="text" name="joueur1" id="joueur1" placeholder="Joueur 1">
+            </div>
+            <div class="form-group">
+                <label for="joueur2">Nom Joueur 2 (devine le mot)</label>
+                <input type="text" name="joueur2" id="joueur2" placeholder="Joueur 2">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary">Lancer la partie</button>
+    </form>
+</section>
+
+<section class="card">
+    <h2>Scores</h2>
+
+    <div class="scores-grid">
+        <div>
+            <h3>Solo</h3>
+            <p>Parties : {{ scores.solo.parties }}</p>
+            <p>Victoires : {{ scores.solo.victoires }}</p>
+            <p>Défaites : {{ scores.solo.defaites }}</p>
+        </div>
+
+        <div>
+            <h3>Deux joueurs</h3>
+            <p>{{ scores.duo.joueur1.nom }} : {{ scores.duo.joueur1.score }}</p>
+            <p>{{ scores.duo.joueur2.nom }} : {{ scores.duo.joueur2.score }}</p>
+        </div>
+    </div>
+
+    <a href="{{ url_for('reset_scores') }}" class="btn-secondary">Réinitialiser les scores</a>
+</section>
+
+<script>
+    // Toggle options selon le mode choisi
+    const radioSolo = document.querySelector('input[value="solo"]');
+    const radioDuo = document.querySelector('input[value="duo"]');
+    const soloOptions = document.querySelector('.solo-options');
+    const duoOptions = document.querySelector('.duo-options');
+
+    function updateModeUI() {
+        if (radioSolo.checked) {
+            soloOptions.style.display = 'grid';
+            duoOptions.style.display = 'none';
+        } else {
+            soloOptions.style.display = 'none';
+            duoOptions.style.display = 'grid';
+        }
+    }
+
+    radioSolo.addEventListener('change', updateModeUI);
+    radioDuo.addEventListener('change', updateModeUI);
+    updateModeUI();
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Pendu{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <h1 class="logo">Jeu du Pendu</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Accueil</a>
+            <a href="{{ url_for('game') }}">Partie</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <p>Pendu POO • Flask • {{ 'Mode: ' ~ session.get('mode', 'solo') }}</p>
+</footer>
+</body>
+</html>

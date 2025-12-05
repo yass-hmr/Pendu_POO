@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Pendu - Partie{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="game-header">
+        {% if mode == "solo" %}
+            <h2>Mode solo</h2>
+            {% if theme and difficulte %}
+                <p>Thème : <strong>{{ theme }}</strong> • Difficulté : <strong>{{ difficulte }}</strong></p>
+            {% endif %}
+        {% else %}
+            <h2>Mode deux joueurs</h2>
+            <p><strong>{{ joueur1 }}</strong> a choisi le mot. <strong>{{ joueur2 }}</strong> devine.</p>
+        {% endif %}
+    </div>
+
+    <div class="game-layout">
+        <pre class="pendu-ascii">{{ jeu.etat_pendu_ascii() }}</pre>
+
+        <div class="game-info">
+            <p class="mot-affiche">{{ jeu.afficher_mot() }}</p>
+            <p>Essais restants : <strong>{{ jeu.essais_restants }}</strong></p>
+            <p>Lettres proposées :
+                {% if jeu.lettres_proposees %}
+                    {{ jeu.lettres_proposees|list|sort|join(", ") }}
+                {% else %}
+                    aucune
+                {% endif %}
+            </p>
+
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+
+            {% if not jeu.est_gagne() and not jeu.est_perdu() %}
+                <form method="post" class="form-inline">
+                    <input type="text" name="tentative" maxlength="30" placeholder="Lettre ou mot entier" autofocus>
+                    <button type="submit" class="btn-primary">Proposer</button>
+                </form>
+            {% else %}
+                <div class="result">
+                    {% if jeu.est_gagne() %}
+                        <p class="win">🎉 Bravo ! Tu as trouvé le mot : {{ jeu.mot_a_deviner }}</p>
+                    {% else %}
+                        <p class="lose">😔 Perdu... Le mot était : {{ jeu.mot_a_deviner }}</p>
+                    {% endif %}
+                    <a href="{{ url_for('nouvelle_partie') }}" class="btn-primary">Nouvelle partie</a>
+                    <a href="{{ url_for('index') }}" class="btn-secondary">Retour à l'accueil</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Scores</h2>
+    <div class="scores-grid">
+        <div>
+            <h3>Solo</h3>
+            <p>Parties : {{ scores.solo.parties }}</p>
+            <p>Victoires : {{ scores.solo.victoires }}</p>
+            <p>Défaites : {{ scores.solo.defaites }}</p>
+        </div>
+        <div>
+            <h3>Deux joueurs</h3>
+            <p>{{ scores.duo.joueur1.nom }} : {{ scores.duo.joueur1.score }}</p>
+            <p>{{ scores.duo.joueur2.nom }} : {{ scores.duo.joueur2.score }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
