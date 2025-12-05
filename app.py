@@ -2,9 +2,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from jeu import Pendu
 from mots import choisir_mot
+import os
 
 app = Flask(__name__)
-app.secret_key = "change-moi-en-cle-secrete"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
 
 
 THEMES_DISPONIBLES = ["animaux", "nourriture", "informatique", "sport", "geo"]
